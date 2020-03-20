@@ -1,6 +1,36 @@
 const express = require('express');
 const router = express.Router();
 const Blog = require('../models/Blog');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+const storage = multer.diskStorage({
+    destination: function (req, res, cb) {
+        cb(null, 'public/images/');
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    }
+})
+
+
+const fileFilter = (req, file, cb) => {
+    if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+        cb(null, true);
+    } else {
+        cb(new Error('not vaild file type'), false);
+    }
+};
+
+
+const upload = multer({
+    storage: storage,
+    limits: {
+        fileSize: 2000000
+    },
+    fileFilter: fileFilter
+});
 
 
 // Get all blogs
@@ -27,7 +57,7 @@ router.get('/:id', async (req, res) => {
 
         if (blogs.length > 0) {
             res.status(200);
-            res.send(blogs);
+            res.send(blogs[0]);
         }
 
         res.status(404);
@@ -42,14 +72,13 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create blog
-router.post('/', async (req, res) => {
+router.post('/', upload.single('image'), async (req, res) => {
     try {
-
         const blog = {
             categoryId: req.body.categoryId,
             title: req.body.title,
             content: req.body.content,
-            imageUrl: req.body.imageUrl
+            imageUrl: req.file.filename
         }
 
         const result = await Blog.create(blog)
@@ -59,7 +88,6 @@ router.post('/', async (req, res) => {
     } catch (error) {
         res.status(500);
         res.send({ 'Error': error.message });
-
     }
 });
 
@@ -113,6 +141,19 @@ router.delete('/:id', async (req, res) => {
             res.status(404);
             res.send({ 'Error': `record with id ${id} not existent` });
         }
+
+
+        fs.stat('public/images/' + blogs[0].imageUrl, (err, stats) => {
+
+            if (err) {
+                return console.error(err);
+            }
+
+            fs.unlink('public/images/' + blogs[0].imageUrl, err => {
+                if (err) return console.log(err);
+                console.log('file deleted successfully');
+            });
+        });
 
         const result = await blogs[0].destroy()
 
