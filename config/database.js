@@ -1,6 +1,7 @@
+require('dotenv').config();
 const Sequelize = require('sequelize');
 
-module.exports = new Sequelize('vasa', 'root', 'qwerty123', {
-    host: 'localhost',
+module.exports = new Sequelize(process.env.DATABASE_NAME, process.env.DATABASE_USER, process.env.DATABASE_PASSWORD, {
+    host: process.env.DATABASE_HOST,
     dialect: 'mysql'
 });
