@@ -6,12 +6,16 @@ const db = require('./config/database');
 db.authenticate()
     .then(() => console.log('Database Connected'))
     .catch(err => console.log('Error:', err));
-    
+
 const app = express();
 
 app.use(cors());
 app.use(express.static('./public'));
 app.use(express.json());
+
+app.get('/', (req, res) => {
+    console.log(process.env.NODE_ENV);
+});
 
 app.use('/categories', require('./routes/categories'));
 app.use('/blogs', require('./routes/blogs'));
