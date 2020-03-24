@@ -4,6 +4,15 @@ const Blog = require('../models/Blog');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const AWS = require('aws-sdk');
+
+
+AWS.config.update({
+    accessKeyId: 'AKIAJY7FWE6QSYOBCKFA',
+    secretAccessKey: '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'
+});
+
+var s3 = new AWS.S3();
 
 const storage = multer.diskStorage({
     destination: function (req, res, cb) {
@@ -74,12 +83,33 @@ router.get('/:id', async (req, res) => {
 // Create blog
 router.post('/', upload.single('image'), async (req, res) => {
     try {
+
         const blog = {
             categoryId: req.body.categoryId,
             title: req.body.title,
             content: req.body.content,
             imageUrl: req.file.filename
         }
+
+        const filePath = req.file.path;
+
+        //configuring parameters AWS
+        var params = {
+            Bucket: 'steffanimendoza',
+            Body: fs.createReadStream(filePath),
+            Key: 'images/' + req.file.filename
+        };
+
+        s3.upload(params, function (err, data) {
+            //handle error
+            if (err) {
+                console.log("Error", err);
+            }
+            //success
+            if (data) {
+                console.log("Uploaded in:", data.Location);
+            }
+        });
 
         const result = await Blog.create(blog)
         res.status(201);
