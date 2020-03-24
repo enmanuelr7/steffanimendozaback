@@ -5,6 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const AWS = require('aws-sdk');
+const checkAuth = require('../middleware/check-auth');
 if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
 
@@ -82,7 +83,7 @@ router.get('/:id', async (req, res) => {
 });
 
 // Create blog
-router.post('/', upload.single('image'), async (req, res) => {
+router.post('/', checkAuth, upload.single('image'), async (req, res) => {
     try {
 
         const blog = {
@@ -123,7 +124,7 @@ router.post('/', upload.single('image'), async (req, res) => {
 });
 
 // Update blog
-router.put('/:id', async (req, res) => {
+router.put('/:id', checkAuth, async (req, res) => {
     try {
 
         const id = req.params.id;
@@ -158,7 +159,7 @@ router.put('/:id', async (req, res) => {
 });
 
 // Delete blog
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',checkAuth, async (req, res) => {
     try {
 
         const id = req.params.id;
