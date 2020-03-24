@@ -5,7 +5,7 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const AWS = require('aws-sdk');
-//require('dotenv').config();
+if (process.env.NODE_ENV !== 'production') require('dotenv').config()
 
 
 AWS.config.update({

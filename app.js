@@ -14,8 +14,8 @@ app.use(express.static('./public'));
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    var env = process.env.NODE_ENV;
-    res.send('actual environment:' + env);
+    res.status(200);
+    res.send('welcome to VASA API');
 });
 
 app.use('/categories', require('./routes/categories'));
