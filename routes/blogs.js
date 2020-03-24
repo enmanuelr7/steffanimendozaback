@@ -5,11 +5,12 @@ const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
 const AWS = require('aws-sdk');
+//require('dotenv').config();
 
 
 AWS.config.update({
-    accessKeyId: 'AKIAJY7FWE6QSYOBCKFA',
-    secretAccessKey: '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'
+    accessKeyId: process.env.AWSAccessKeyId,
+    secretAccessKey: process.env.AWSSecretKey
 });
 
 var s3 = new AWS.S3();
