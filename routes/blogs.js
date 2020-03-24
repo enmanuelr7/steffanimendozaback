@@ -88,7 +88,7 @@ router.post('/', upload.single('image'), async (req, res) => {
             categoryId: req.body.categoryId,
             title: req.body.title,
             content: req.body.content,
-            imageUrl: req.file.filename
+            imageUrl: 'https://steffanimendoza.s3-sa-east-1.amazonaws.com/images/' + req.file.filename
         }
 
         const filePath = req.file.path;
