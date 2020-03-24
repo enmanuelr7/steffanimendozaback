@@ -14,7 +14,8 @@ app.use(express.static('./public'));
 app.use(express.json());
 
 app.get('/', (req, res) => {
-    console.log(process.env.NODE_ENV);
+    var env = process.env.NODE_ENV;
+    res.send('actual environment:' + env);
 });
 
 app.use('/categories', require('./routes/categories'));
