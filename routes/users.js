@@ -69,11 +69,10 @@ router.post('/login', async (req, res) => {
                 expiresIn: '2h'
             })
             return res.status(200).send({
-                message: 'you are authenticated',
                 token: token
             });
         } else {
-            return res.status(500).send({
+            return res.status(401).send({
                 message: 'invalid username or password'
             });
         }
