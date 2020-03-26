@@ -79,7 +79,7 @@ router.post('/login', async (req, res) => {
 
     } catch (err) {
         console.log(err);
-        res.status(500).send({ 'Error': err.message });
+        res.status(500).send({ message: 'auth failed, try again later' });
     }
 });
 
