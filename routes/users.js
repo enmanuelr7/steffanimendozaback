@@ -6,36 +6,42 @@ const jwt = require('jsonwebtoken');
 
 router.post('/signup', async (req, res) => {
     try {
-        const username = req.body.username
-        const users = await User.findAll({
-            where: {
-                username: username
-            }
-        });
+        if (req.body.authorizationKey === process.env.JWT_KEY) {
 
-        if (users.length > 0) {
-            return res.status(200).send({
-                message: `username ${username} is already taken. try another`
+            const username = req.body.username
+            const users = await User.findAll({
+                where: {
+                    username: username
+                }
+            });
+
+            if (users.length > 0) {
+                return res.status(200).send({
+                    message: `username ${username} is already taken. try another`
+                })
+            }
+
+            bcrypt.hash(req.body.password, 10, async (err, hash) => {
+                if (err) {
+                    return res.status(500).send({
+                        error: err
+                    });
+                }
+
+                const user = {
+                    username: username,
+                    password: hash
+                }
+
+                const result = await User.create(user);
+                res.status(201).send({
+                    created: result
+                })
             })
+
+        } else {
+            res.status(401).send('Unauthorized');
         }
-
-        bcrypt.hash(req.body.password, 10, async (err, hash) => {
-            if (err) {
-                return res.status(500).send({
-                    error: err
-                });
-            }
-
-            const user = {
-                username: username,
-                password: hash
-            }
-
-            const result = await User.create(user);
-            res.status(201).send({
-                created: result
-            })
-        })
 
     } catch (err) {
         console.log(err);
