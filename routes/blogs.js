@@ -159,7 +159,7 @@ router.put('/:id', checkAuth, async (req, res) => {
 });
 
 // Delete blog
-router.delete('/:id',checkAuth, async (req, res) => {
+router.delete('/:id', checkAuth, async (req, res) => {
     try {
 
         const id = req.params.id;
@@ -175,16 +175,27 @@ router.delete('/:id',checkAuth, async (req, res) => {
         }
 
 
-        fs.stat('public/images/' + blogs[0].imageUrl, (err, stats) => {
+        // fs.stat('public/images/' + blogs[0].imageUrl, (err, stats) => {
 
-            if (err) {
-                return console.error(err);
-            }
+        //     if (err) {
+        //         return console.error(err);
+        //     }
 
-            fs.unlink('public/images/' + blogs[0].imageUrl, err => {
-                if (err) return console.log(err);
-                console.log('file deleted successfully');
-            });
+        //     fs.unlink('public/images/' + blogs[0].imageUrl, err => {
+        //         if (err) return console.log(err);
+        //         console.log('file deleted successfully');
+        //     });
+        // });
+
+        // Bucket: 'steffanimendoza',
+        // Body: fs.createReadStream(filePath),
+        // Key: 'images/' + req.file.filename
+
+        var params = { Bucket: 'steffanimendoza', Key: 'images/' + blogs[0].imageUrl.slice(58) };
+
+        s3.deleteObject(params, function (err, data) {
+            if (err) console.log(err, err.stack); 
+            if (data) console.log('image deleted');
         });
 
         const result = await blogs[0].destroy()
