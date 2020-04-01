@@ -82,6 +82,28 @@ router.get('/:id', async (req, res) => {
     }
 });
 
+// Get blogs by category
+router.get('/byCategory/:id', async (req, res) => {
+    try {
+
+        const id = req.params.id;
+        const blogs = await Blog.findAll({
+            where: {
+                categoryId: id
+            }
+        });
+
+        res.status(200).send(blogs);
+
+
+    } catch (error) {
+
+        res.status(500);
+        res.send({ 'Error': error.message });
+
+    }
+});
+
 // Create blog
 router.post('/', checkAuth, upload.single('image'), async (req, res) => {
     try {
@@ -194,7 +216,7 @@ router.delete('/:id', checkAuth, async (req, res) => {
         var params = { Bucket: 'steffanimendoza', Key: 'images/' + blogs[0].imageUrl.slice(58) };
 
         s3.deleteObject(params, function (err, data) {
-            if (err) console.log(err, err.stack); 
+            if (err) console.log(err, err.stack);
             if (data) console.log('image deleted');
         });
 
