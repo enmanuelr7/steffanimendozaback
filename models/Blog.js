@@ -2,33 +2,22 @@ const Sequelize = require('sequelize');
 const db = require('../config/database');
 
 const Blog = db.define('blogs', {
-    categoryId: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
+    categoryName: {
+        type: Sequelize.STRING,
+        allowNull: false
     },
     title: {
         type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
+        primaryKey: true,
+        allowNull: false
     },
     content: {
-        type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
+        type: Sequelize.TEXT,
+        allowNull: false
     },
     imageUrl: {
         type: Sequelize.STRING,
-        allowNull: false,
-        validate: {
-            notEmpty: true
-        }
+        allowNull: false
     }
 });
 

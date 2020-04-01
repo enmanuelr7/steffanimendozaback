@@ -56,40 +56,38 @@ router.get('/', async (req, res) => {
 });
 
 // Get single blog
-router.get('/:id', async (req, res) => {
+router.get('/:title', async (req, res) => {
     try {
 
-        const id = req.params.id;
+        const title = req.params.title;
+
         const blogs = await Blog.findAll({
             where: {
-                id: id
+                title: title
             }
         });
 
         if (blogs.length > 0) {
-            res.status(200);
-            res.send(blogs[0]);
+            return res.status(200).send(blogs[0]);
         }
 
-        res.status(404);
-        res.send({ 'Error': `record with id ${id} not existent` });
+        res.status(404).send({ 'Error': `record with title ${title} not existent` });
 
     } catch (error) {
 
-        res.status(500);
-        res.send({ 'Error': error.message });
+        res.status(500).send({ 'Error': error.message });
 
     }
 });
 
 // Get blogs by category
-router.get('/byCategory/:id', async (req, res) => {
+router.get('/byCategory/:categoryName', async (req, res) => {
     try {
 
-        const id = req.params.id;
+        const categoryName = req.params.categoryName;
         const blogs = await Blog.findAll({
             where: {
-                categoryId: id
+                categoryName: categoryName
             }
         });
 
@@ -109,7 +107,7 @@ router.post('/', checkAuth, upload.single('image'), async (req, res) => {
     try {
 
         const blog = {
-            categoryId: req.body.categoryId,
+            categoryName: req.body.categoryName,
             title: req.body.title,
             content: req.body.content,
             imageUrl: 'https://steffanimendoza.s3-sa-east-1.amazonaws.com/images/' + req.file.filename
@@ -146,23 +144,23 @@ router.post('/', checkAuth, upload.single('image'), async (req, res) => {
 });
 
 // Update blog
-router.put('/:id', checkAuth, async (req, res) => {
+router.put('/:title', checkAuth, async (req, res) => {
     try {
 
-        const id = req.params.id;
+        const title = req.params.title;
         const blogs = await Blog.findAll({
             where: {
-                id: id
+                title: title
             }
         });
 
         if (blogs.length == 0) {
             res.status(404);
-            res.send({ 'Error': `record with id ${id} not existent` });
+            res.send({ 'Error': `record with title ${title} not existent` });
         }
 
         const updatedBlog = {
-            categoryId: req.body.categoryId,
+            categoryName: req.body.categoryName,
             title: req.body.title,
             content: req.body.content,
             imageUrl: req.body.imageUrl
@@ -181,19 +179,19 @@ router.put('/:id', checkAuth, async (req, res) => {
 });
 
 // Delete blog
-router.delete('/:id', checkAuth, async (req, res) => {
+router.delete('/:title', checkAuth, async (req, res) => {
     try {
 
-        const id = req.params.id;
+        const title = req.params.title;
         const blogs = await Blog.findAll({
             where: {
-                id: id
+                title: title
             }
         });
 
         if (blogs.length == 0) {
             res.status(404);
-            res.send({ 'Error': `record with id ${id} not existent` });
+            res.send({ 'Error': `record with title ${title} not existent` });
         }
 
 
