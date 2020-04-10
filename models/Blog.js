@@ -2,13 +2,14 @@ const Sequelize = require('sequelize');
 const db = require('../config/database');
 
 const Blog = db.define('blogs', {
-    categoryName: {
-        type: Sequelize.STRING,
-        allowNull: false
-    },
+
     title: {
         type: Sequelize.STRING,
         primaryKey: true,
+        allowNull: false
+    },
+    categoryName: {
+        type: Sequelize.STRING,
         allowNull: false
     },
     content: {
@@ -21,4 +22,4 @@ const Blog = db.define('blogs', {
     }
 });
 
-module.exports = Blog; 
+module.exports = Blog;
