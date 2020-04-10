@@ -105,7 +105,6 @@ router.get('/byCategory/:categoryName', async (req, res) => {
 // Create blog
 router.post('/', checkAuth, upload.single('image'), async (req, res) => {
     try {
-
         const blog = {
             categoryName: req.body.categoryName,
             title: req.body.title,
@@ -144,19 +143,19 @@ router.post('/', checkAuth, upload.single('image'), async (req, res) => {
 });
 
 // Update blog
-router.put('/:title', checkAuth, upload.single('image'), async (req, res) => {
+router.put('/:id', checkAuth, upload.single('image'), async (req, res) => {
     try {
 
-        const title = req.params.title;
+        const id = req.params.id;
         const blogs = await Blog.findAll({
             where: {
-                title: title
+                id: id
             }
         });
 
         if (blogs.length == 0) {
             res.status(404);
-            res.send({ 'Error': `record with title ${title} not existent` });
+            res.send({ 'Error': `record with id ${id} not existent` });
         }
 
         let imageChange;
@@ -168,6 +167,7 @@ router.put('/:title', checkAuth, upload.single('image'), async (req, res) => {
         }
 
         const updatedBlog = {
+            title: req.body.title,
             categoryName: req.body.categoryName,
             content: req.body.content,
             imageUrl: imageChange ? 'https://steffanimendoza.s3-sa-east-1.amazonaws.com/images/' + req.file.filename : blogs[0].imageUrl
